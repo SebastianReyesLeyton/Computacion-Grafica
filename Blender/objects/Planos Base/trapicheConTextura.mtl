@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\texture\\barro blanco.jpg
+map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\Blender\\texture\\barro blanco.jpg
 
 newmtl Material.003
 Ns 225.000000
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\texture\\madera.jpg
+map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\Blender\\texture\\madera.jpg
 
 newmtl Material.004
 Ns 225.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\texture\\piso rocoso.jpg
+map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\Blender\\texture\\piso rocoso.jpg
 
 newmtl Textura
 Ns 900.000000
@@ -43,4 +43,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\texture\\tejado.jpg
+map_Kd C:\\Users\\juani\\OneDrive\\Documentos\\UNIVERSIDAD\\SEMESTRE V\\Computacion Grafica\\Proyecto\\Blender\\texture\\tejado.jpg
