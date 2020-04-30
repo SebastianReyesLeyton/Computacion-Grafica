@@ -188,5 +188,7 @@
   <ItemGroup>
     <Text Include="fragmentshader.txt" />
     <Text Include="vertexshader.txt" />
+    <Text Include="vertexshaderT.txt" />
+    <Text Include="fragmentshaderT.txt" />
   </ItemGroup>
 </Project>

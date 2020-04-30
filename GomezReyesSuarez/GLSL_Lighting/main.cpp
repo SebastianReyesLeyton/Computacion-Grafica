@@ -13,6 +13,7 @@
 #include "Door.h"
 #include "./glm/glm.h"
 #include "AbrirMalla.h"
+#include <FreeImage.h>
 
 //-----------------------------------------------------------------------------
 #define NUM_TREE 10
@@ -36,6 +37,7 @@ class myWindow : public cwc::glutWindow
 protected:
    cwc::glShaderManager SM;
    cwc::glShader *shader;
+   cwc::glShader* shader1;
    GLuint ProgramObject;
    clock_t time0,time1;
    float timer010;  // timer counting 0->1->0
@@ -48,8 +50,42 @@ protected:
    GLfloat movZ, movX;
    GLfloat rotY;
    BOOLEAN mZPositivo, mZNegativo, mX[2], rY[2];
+   GLuint textid;
+
 public:
 	myWindow(){}
+
+    void initialize_textures(GLuint textid, std::string name)
+    {
+        int w, h;
+        GLubyte* data = 0;
+        data = glmReadPPM("soccer_ball_diffuse.ppm", &w, &h);
+        std::cout << "Read soccer_ball_diffuse.ppm, width = " << w << ", height = " << h << std::endl;
+
+        //dib1 = loadImage("soccer_ball_diffuse.jpg"); //FreeImage
+
+        glGenTextures(1, &textid);
+        glBindTexture(GL_TEXTURE_2D, textid);
+        glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // Loading JPG file
+        FIBITMAP* bitmap = FreeImage_Load(
+            FreeImage_GetFileType("./Mallas/bola.jpg", 0),
+            "./Mallas/bola.jpg");  //*** Para Textura: esta es la ruta en donde se encuentra la textura
+
+        FIBITMAP* pImage = FreeImage_ConvertTo32Bits(bitmap);
+        int nWidth = FreeImage_GetWidth(pImage);
+        int nHeight = FreeImage_GetHeight(pImage);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight,
+            0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(pImage));
+
+        FreeImage_Unload(pImage);
+        //
+        glEnable(GL_TEXTURE_2D);
+    }
 
     void ControlDeMovimiento() 
     {
@@ -83,7 +119,6 @@ public:
 	virtual void OnRender(void)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
       //timer010 = 0.09; //for screenshot!
       glPushMatrix();
       glTranslatef(-2,0,10);
@@ -92,6 +127,7 @@ public:
       glRotatef(rotY, 0.0f, 1.0f, 0.0f); // control rotacion mundo ( Q, E )
       glTranslatef(1, -0.25, 0); //control movimiento camara (W A S D)
       
+    if (shader) shader->begin();
       // dibujar casa
       malla[0]->DibujarMalla();
 
@@ -327,7 +363,7 @@ public:
    {
      glEnable(GL_LIGHTING);
      glEnable(GL_LIGHT0);
-     glEnable(GL_NORMALIZE);
+     /*glEnable(GL_NORMALIZE);
      
      // Light model parameters:
      // -------------------------------------------
@@ -385,6 +421,7 @@ public:
      glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_Ks);
      glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, material_Ke);
      glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material_Se);
+   */
    }
 };
 

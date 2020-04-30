@@ -28,8 +28,8 @@
     <Filter Include="cwc\source">
       <UniqueIdentifier>{62a18be6-39a8-4306-83fa-6aa02021504d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ClasesPropias">
-      <UniqueIdentifier>{0fb91c0c-2541-4e74-8788-25b6940c84cb}</UniqueIdentifier>
+    <Filter Include="Clases">
+      <UniqueIdentifier>{6d0eb665-8276-4861-b4f1-ecb0f9feebad}</UniqueIdentifier>
     </Filter>
     <Filter Include="glm">
       <UniqueIdentifier>{b0f7969a-4907-4953-905b-cc9aa1d2928c}</UniqueIdentifier>
@@ -75,14 +75,35 @@
     <ClInclude Include="cwc\include\glWindow.h">
       <Filter>cwc\include</Filter>
     </ClInclude>
-    <ClInclude Include="ClassTree.h">
-      <Filter>ClasesPropias</Filter>
-    </ClInclude>
-    <ClInclude Include="Door.h">
-      <Filter>ClasesPropias</Filter>
-    </ClInclude>
     <ClInclude Include="glm\glm.h">
       <Filter>glm</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Malla.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\ConstructorMalla.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Trapiche.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\CasaPrincipal.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Perro.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Caballo.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\MallaTextura.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Textura.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+    <ClInclude Include="Clases\Techo.h">
+      <Filter>Clases</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,14 +189,35 @@
       <Filter>cwc\source</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ClassTree.cpp">
-      <Filter>ClasesPropias</Filter>
-    </ClCompile>
-    <ClCompile Include="Door.cpp">
-      <Filter>ClasesPropias</Filter>
-    </ClCompile>
     <ClCompile Include="glm\glm.cpp">
       <Filter>glm</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Malla.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\ConstructorMalla.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Trapiche.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\CasaPrincipal.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Perro.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Caballo.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\MallaTextura.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Textura.cpp">
+      <Filter>Clases</Filter>
+    </ClCompile>
+    <ClCompile Include="Clases\Techo.cpp">
+      <Filter>Clases</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +227,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragmentshader.txt" />
+    <Text Include="fragmentshaderT.txt" />
     <Text Include="vertexshader.txt" />
+    <Text Include="vertexshaderT.txt" />
   </ItemGroup>
 </Project>

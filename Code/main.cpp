@@ -9,41 +9,142 @@
 #include <iostream>
 #include "glsl.h"
 #include <time.h>
-#include "./glm/glm.h"
+#include "Clases/Malla.h"
+#include "Clases/ConstructorMalla.h"
+#include "Clases/MallaTextura.h"
+#include <FreeImage.h>
+#include <math.h>
+#include <vector>
 
 //-----------------------------------------------------------------------------
-#define NUM_TREE 10
+#define NUM_OBJECTS 4
+#define NUM_TEXTURES 1
+#define RO 0.005
+#define DELTA 0.05
+#define BETTA 0.1
 
 class myWindow : public cwc::glutWindow
 {
 protected:
    cwc::glShaderManager SM;
-   cwc::glShader *shader;
+   cwc::glShader *shader, *shader1;
    GLuint ProgramObject;
    clock_t time0,time1;
    float timer010;  // timer counting 0->1->0
-   bool bUp;        // flag if counting up or down.
-   
+   bool bUp, rot;        // flag if counting up or down.
+   ConstructorMalla constructor;
+   Malla* mallas[NUM_OBJECTS];
+   BOOLEAN statusAxes[6];
+   GLfloat movXZ[2], rotY;
+   std::vector< std::vector<GLfloat> > positions;
+   GLuint textid;
+
 public:
 	myWindow(){}
 
-	virtual void OnRender(void)
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    void initialize_textures(void) {
+        int w, h;
+        GLubyte* data = 0;
+
+        //dib1 = loadImage("soccer_ball_diffuse.jpg"); //FreeImage
+
+        glGenTextures(1, &textid);
+        glBindTexture(GL_TEXTURE_2D, textid);
+        glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // Loading JPG file
+        FIBITMAP* bitmap = FreeImage_Load(
+            FreeImage_GetFileType("mallas/bola.jpg", 0),
+            "mallas/bola.jpg");  //*** Para Textura: esta es la ruta en donde se encuentra la textura
+
+        FIBITMAP* pImage = FreeImage_ConvertTo32Bits(bitmap);
+        std::cout << pImage << "\n";
+        int nWidth = FreeImage_GetWidth(pImage);
+        int nHeight = FreeImage_GetHeight(pImage);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight,
+            0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(pImage));
+
+        FreeImage_Unload(pImage);
+        //
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    void movementControl() {
+
+        if (statusAxes[0]) movXZ[0] = movXZ[0] - DELTA;    // Se mueve hacia la izquierda
+        if (statusAxes[1]) movXZ[0] = movXZ[0] + DELTA;    // Se mueve a la derecha
+        if (statusAxes[2]) rotY = ((rotY - BETTA) < 0) ? 360 : rotY - BETTA;
+        if (statusAxes[3]) rotY = ((rotY + BETTA) > 360) ? BETTA : rotY + BETTA;
+        if (statusAxes[4]) movXZ[1] = movXZ[1] - DELTA;    // Se mueve hacia adelante
+        if (statusAxes[5]) movXZ[1] = movXZ[1] + DELTA;    // Se mueve hacia atras
+    }
+
+	virtual void OnRender(void) {
+	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-      //timer010 = 0.09; //for screenshot!
-      glPushMatrix();
-      if (shader) shader->begin();
+        //timer010 = 0.09; //for screenshot!
+        glPushMatrix();
+        movementControl();
+
+        BOOLEAN result = false;
+        for (int i = 0; i < 6; i++) {
+            if (!result) result = statusAxes[i];
+        }
+        glTranslatef(0.0f, 0.0f, -4.0f);
+        glTranslatef(movXZ[0], 0.0f, movXZ[1]);
+        glRotatef(rotY, 0.0, 1.0, 0.0);
+
+        if (bUp) {
+            if (rot) {
+                positions[3][3] = -90.0f;
+                positions[3][4] = 0.0f;
+                positions[3][5] = 1.0f;
+                positions[3][6] = 0.0f;
+                rot = false;
+            }
+            positions[3][0] -= RO;
+        }
+        else {
+            if (!rot) {
+                positions[3][3] = 90.0f;
+                positions[3][4] = 0.0f;
+                positions[3][5] = 1.0f;
+                positions[3][6] = 0.0f;
+                rot = true;
+            }
+            positions[3][0] += RO;
+        }
+
+        if (shader) shader->begin();
+
+        glPushMatrix();
+            glTranslatef(0.0f, -0.5f, 0.0f);
+            glScalef(1.0, 0.01, 1.0);
+            glutSolidCube(20);
+        glPopMatrix();
+        
+        if (shader) shader->end();
+        
+        if (shader1) shader1->begin();
 
         // Renderizacion
-        
+        for (int i = 0; i < NUM_OBJECTS; i++) {
+            glPushMatrix();
+            mallas[i]->transformaciones(positions[i]);
+            mallas[i]->dibujarMalla();
+            glPopMatrix();
+        }
+      
         // Fin de la Renderizacion
 
-      if (shader) shader->end();
-      glutSwapBuffers();
-      glPopMatrix();
+        if (shader1) shader1->end();
+        glutSwapBuffers();
+        glPopMatrix();
 
-      UpdateTimer();
+        UpdateTimer();
 
 		Repaint();
 	}
@@ -52,35 +153,85 @@ public:
 
 	// When OnInit is called, a render context (in this case GLUT-Window) 
 	// is already available!
-	virtual void OnInit()
-	{
-		glClearColor(0.5f, 0.5f, 1.0f, 0.0f);
-		glShadeModel(GL_SMOOTH);
-		glEnable(GL_DEPTH_TEST);
+    virtual void OnInit() {
+
+        glClearColor(0.5f, 0.5f, 1.0f, 0.0f);
+        glShadeModel(GL_SMOOTH);
+        glEnable(GL_DEPTH_TEST);
 
         // Inicializacion de objetos
 
+        char* nombres[NUM_OBJECTS] = {"trapiche", "casa principal", "perro", "caballo"};
+        //char* nombres[NUM_OBJECTS] = { "trapiche" };
+     
+        positions = {};
 
-        // Fin de la Inicializacion de objetis
+        // Trapiche
+        std::vector< GLfloat > transformation = {8.0f, 0.30f, 0.3f, -90.0f, 0.0f, 1.0f, 0.0f, 2.0f, 2.0f, 2.0f };
+        positions.push_back(transformation);
+        
+        // Casa Pricipal
+        transformation = { -6.0f, 0.9f, 0.3f, 0.0f, 0.0f, 1.0f, 0.0f, 4.0f, 4.0f, 4.0f };
+        positions.push_back(transformation);
+
+        // Perro
+        transformation = { -4.0f, -0.27f, 0.0f, -90.0f, 1.0f, 0.0f, 0.0f, 0.18f, 0.18f, 0.18f };
+        positions.push_back(transformation);
+
+        // Caballo
+        transformation = { 8.0f, -0.15f, 2.5f, -90.0f, 0.0f, 1.0f, 0.0f, 0.4f, 0.4f, 0.4f };
+        positions.push_back(transformation);
+        
+        constructor = ConstructorMalla();
+        for (int i = 0; i < NUM_OBJECTS; i++) {
+            mallas[i] = NULL;
+        }
+
+        for (int i = 0; i < NUM_OBJECTS; i++) {
+            constructor.crearMalla(nombres[i]);
+            mallas[i] = constructor.obtenerMalla();
+            mallas[i]->abrirMalla();
+        }
+
+        // Fin de la Inicializacion de objetos
        
 		shader = SM.loadfromFile("vertexshader.txt","fragmentshader.txt"); // load (and compile, link) from file
 		if (shader==0) 
-         std::cout << "Error Loading, compiling or linking shader\n";
-      else
-      {
-         ProgramObject = shader->GetProgramObject();
-      }
+            std::cout << "Error Loading, compiling or linking shader\n";
+        else
+        {
+            ProgramObject = shader->GetProgramObject();
+        }
 
-      time0 = clock();
-      timer010 = 0.0f;
-      bUp = true;
+        shader1 = SM.loadfromFile("vertexshaderT.txt", "fragmentshaderT.txt"); // load (and compile, link) from file
+        if (shader1 == 0)
+            std::cout << "Error Loading, compiling or linking shader1\n";
+        else
+        {
+            ProgramObject = shader1->GetProgramObject();
+        }
 
-      DemoLight();
+        // Inizialización de las variables
+        time0 = clock();
+        timer010 = 0.0f;
+        bUp = true;
+        rot = false;
 
+        for (int i = 0; i < 6; i++) {
+            statusAxes[i] = false;
+        }
+
+        movXZ[0] = 0;
+        movXZ[1] = 0;
+        rotY = 0;
+        // Fin de la Inicializacion de las variables
+        initialize_textures();
+        
+        DemoLight();
 	}
 
-	virtual void OnResize(int w, int h)
-   {
+	virtual void OnResize(int w, int h) {
+
       if(h == 0) h = 1;
 	   float ratio = 1.0f * (float)w / (float)h;
 
@@ -91,11 +242,12 @@ public:
 
       gluPerspective(45,ratio,1,100);
 	   glMatrixMode(GL_MODELVIEW);
-	   glLoadIdentity();
-	   gluLookAt(0.0f,0.0f,4.0f, 
-		          0.0,0.0,-1.0,
-			       0.0f,1.0f,0.0f);
-   }
+       glLoadIdentity();
+       gluLookAt(0.0f, 0.0f, 0.0f,
+           0.0, 0.0, -1.0,
+           0.0f, 1.0f, 0.0f);
+    }
+
 	virtual void OnClose(void){}
 	virtual void OnMouseDown(int button, int x, int y) {}    
 	virtual void OnMouseUp(int button, int x, int y) {}
@@ -103,10 +255,25 @@ public:
 
 	virtual void OnKeyDown(int nKey, char cAscii)
 	{       
-		if (cAscii == 27) // 0x1b = ESC
-		{
-			this->Close(); // Close Window!
-		} 
+		if (cAscii == 27) {           // 0x1b = ESC
+			this->Close();            // Close Window!
+		}
+
+        switch (cAscii) {
+            case 'w': statusAxes[5] = true;
+                      break;
+            case 's': statusAxes[4] = true;
+                      break;
+            case 'd': statusAxes[0] = true;
+                      break;
+            case 'a': statusAxes[1] = true;
+                      break;
+            case 'e': statusAxes[2] = true;
+                      break;
+            case 'q': statusAxes[3] = true;
+                      break;
+        }
+
 	};
 
 	virtual void OnKeyUp(int nKey, char cAscii)
@@ -115,6 +282,21 @@ public:
          shader->enable();
       else if (cAscii == 'f') // f: Fixed Function
          shader->disable();
+
+      switch (cAscii) {
+      case 'w': statusAxes[5] = false;
+                break;
+      case 's': statusAxes[4] = false;
+                break;
+      case 'd': statusAxes[0] = false;
+                break;
+      case 'a': statusAxes[1] = false;
+                break;
+      case 'e': statusAxes[2] = false;
+                break;
+      case 'q': statusAxes[3] = false;
+                break;
+      }
 	}
 
    void UpdateTimer()
@@ -143,7 +325,7 @@ public:
      glEnable(GL_LIGHTING);
      glEnable(GL_LIGHT0);
      glEnable(GL_NORMALIZE);
-     
+     /*
      // Light model parameters:
      // -------------------------------------------
      
@@ -200,6 +382,7 @@ public:
      glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material_Ks);
      glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, material_Ke);
      glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, material_Se);
+     */
    }
 };
 

@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>freeglut/include;glew/include;cwc/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>freeglut/include;glew/include;cwc/include;%(AdditionalIncludeDirectories);$(ProjectDir)/FreeImage</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FREEGLUT_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -68,6 +68,8 @@
       <ProgramDatabaseFile>$(OutDir)TemplateProject.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(ProjectDir)/FreeImage</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,12 +91,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ClassTree.h" />
+    <ClInclude Include="Clases\Caballo.h" />
+    <ClInclude Include="Clases\CasaPrincipal.h" />
+    <ClInclude Include="Clases\ConstructorMalla.h" />
+    <ClInclude Include="Clases\Malla.h" />
+    <ClInclude Include="Clases\MallaTextura.h" />
+    <ClInclude Include="Clases\Perro.h" />
+    <ClInclude Include="Clases\Techo.h" />
+    <ClInclude Include="Clases\Textura.h" />
+    <ClInclude Include="Clases\Trapiche.h" />
     <ClInclude Include="cwc\include\glApplication.h" />
     <ClInclude Include="cwc\include\glsl.h" />
     <ClInclude Include="cwc\include\glutwindow.h" />
     <ClInclude Include="cwc\include\glWindow.h" />
-    <ClInclude Include="Door.h" />
     <ClInclude Include="freeglut\include\Gl\freeglut.h" />
     <ClInclude Include="freeglut\include\Gl\freeglut_ext.h" />
     <ClInclude Include="freeglut\include\Gl\freeglut_std.h" />
@@ -107,12 +116,19 @@
     <ClInclude Include="glm\glm.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClassTree.cpp" />
+    <ClCompile Include="Clases\Caballo.cpp" />
+    <ClCompile Include="Clases\CasaPrincipal.cpp" />
+    <ClCompile Include="Clases\ConstructorMalla.cpp" />
+    <ClCompile Include="Clases\Malla.cpp" />
+    <ClCompile Include="Clases\MallaTextura.cpp" />
+    <ClCompile Include="Clases\Perro.cpp" />
+    <ClCompile Include="Clases\Techo.cpp" />
+    <ClCompile Include="Clases\Textura.cpp" />
+    <ClCompile Include="Clases\Trapiche.cpp" />
     <ClCompile Include="cwc\source\glApplication.cpp" />
     <ClCompile Include="cwc\source\glsl.cpp" />
     <ClCompile Include="cwc\source\glutwindow.cpp" />
     <ClCompile Include="cwc\source\glWindow.cpp" />
-    <ClCompile Include="Door.cpp" />
     <ClCompile Include="freeglut\source\freeglut_callbacks.c" />
     <ClCompile Include="freeglut\source\freeglut_cursor.c" />
     <ClCompile Include="freeglut\source\freeglut_display.c" />
@@ -144,7 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragmentshader.txt" />
+    <Text Include="fragmentshaderT.txt" />
     <Text Include="vertexshader.txt" />
+    <Text Include="vertexshaderT.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
