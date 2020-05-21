@@ -1,0 +1,23 @@
+Para esta entrega se estan usando dos estructuras de datos fundamentales:
+
+1) Clase AbrirMalla:
+	Esta clase se usa para poder abrir las mallas .obj desde openGL.
+
+	tiene un atributo GLMmodel llamado objmodel_ptr que tomara el valor de
+	la malla que queramos abrir.
+	
+	tiene tres metodos:
+	- Su constructor: Recibe la ruta de la malla y la almacena en el atributo objmodel_ptr.
+	- Su destructor.
+	- dibujarMalla : Esta funcion nos permite dibujar la malla en nuestro mundo de openGL.
+
+2) Una lista de punteros a las mallas con nombre mallas, en esta lista se almacenaran todas la mallas que usemos en el mundo virtual,
+   el tamaño de esta malla es igual al numero de mallas en el mundo virtual y esta definido bajo la constante de NUM_MALLA
+   donde para esta entrega NUM_MALLA = 5.
+
+	mallas[0] = Casa principal.
+	mallas[1] = Caballo.
+	mallas[2] = Trapiche.
+	mallas[3] = Perro.
+	mallas[4] = Acueducto.
+   
